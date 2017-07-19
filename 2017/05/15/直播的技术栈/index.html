@@ -1,0 +1,754 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="转载自：直播技术栈 流程：主播端采集 -&amp;gt; 主播端编码 -&amp;gt; RTMP协议上传视频 -&amp;gt; 流媒体服务器解码，转码 -&amp;gt; 使用不同的流媒体格式，flv or m3u8 -&amp;gt; 使用不同的推流协议HLS or RTMP over HTTP 推送  1.采集 主播端视频编码格式： H.264，H.265音频编码格式： AAC， HE-AAC 编码的意义原始视频数据存储空间大，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="直播的技术栈">
+<meta property="og:url" content="https://sidalee.github.io/2017/05/15/直播的技术栈/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="转载自：直播技术栈 流程：主播端采集 -&amp;gt; 主播端编码 -&amp;gt; RTMP协议上传视频 -&amp;gt; 流媒体服务器解码，转码 -&amp;gt; 使用不同的流媒体格式，flv or m3u8 -&amp;gt; 使用不同的推流协议HLS or RTMP over HTTP 推送  1.采集 主播端视频编码格式： H.264，H.265音频编码格式： AAC， HE-AAC 编码的意义原始视频数据存储空间大，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/%E7%9B%B4%E6%92%AD%E6%8A%80%E6%9C%AF%E6%A0%88.jpg?raw=true">
+<meta property="og:updated_time" content="2017-05-17T03:41:11.018Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="直播的技术栈">
+<meta name="twitter:description" content="转载自：直播技术栈 流程：主播端采集 -&amp;gt; 主播端编码 -&amp;gt; RTMP协议上传视频 -&amp;gt; 流媒体服务器解码，转码 -&amp;gt; 使用不同的流媒体格式，flv or m3u8 -&amp;gt; 使用不同的推流协议HLS or RTMP over HTTP 推送  1.采集 主播端视频编码格式： H.264，H.265音频编码格式： AAC， HE-AAC 编码的意义原始视频数据存储空间大，">
+<meta name="twitter:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/%E7%9B%B4%E6%92%AD%E6%8A%80%E6%9C%AF%E6%A0%88.jpg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sidalee.github.io/2017/05/15/直播的技术栈/"/>
+
+
+
+
+
+  <title> 直播的技术栈 | Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sidalee.github.io/2017/05/15/直播的技术栈/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sidalee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/headpic/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                直播的技术栈
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T16:30:30+08:00">
+                2017-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>转载自：<a href="http://www.cnblogs.com/xiaoniuzai/p/5937506.html" target="_blank" rel="external">直播技术栈</a></p>
+<p>流程：<br>主播端采集 -&gt; 主播端编码 -&gt; RTMP协议上传视频 -&gt; 流媒体服务器解码，转码 -&gt; 使用不同的流媒体格式，flv or m3u8 -&gt; 使用不同的推流协议HLS or RTMP over HTTP 推送</p>
+<p><img src="https://github.com/sidalee/pic_of_markdown/blob/master/%E7%9B%B4%E6%92%AD%E6%8A%80%E6%9C%AF%E6%A0%88.jpg?raw=true" alt="技术栈"></p>
+<h1 id="1-采集"><a href="#1-采集" class="headerlink" title="1.采集"></a>1.采集</h1><ul>
+<li>主播端<br>视频编码格式： H.264，H.265<br>音频编码格式： AAC， HE-AAC</li>
+<li>编码的意义<br>原始视频数据存储空间大，一个 1080P 的 7 s 视频需要 817 MB<br>原始视频数据传输占用带宽大，10 Mbps 的带宽传输上述 7 s 视频需要 11 分钟</li>
+<li>基本原理<br>主要就是去除冗余<br>空间冗余：图像相邻像素之间有较强的相关性<br>时间冗余：视频序列的相邻图像之间内容相似<br>编码冗余：不同像素值出现的概率不同<br>视觉冗余：人的视觉系统对某些细节不敏感<br>知识冗余：规律性的结构可由先验知识和背景知识得到</li>
+</ul>
+<blockquote>
+<p>所谓容器，就是把编码器生成的多媒体内容（视频，音频，字幕，章节信息等）混合封装在一起的标准。容器使得不同多媒体内容同步播放变得很简单，而容器的另一个作用就是为多媒体内容提供索引，也就是说如果没有容器存在的话一部影片你只能从一开始看到最后，不能拖动进度条（当然这种情况下有的播放器会话比较长的时间临时创建索引），而且如果你不自己去手动另外载入音频就没有声音。</p>
+</blockquote>
+<h1 id="2-网络协议"><a href="#2-网络协议" class="headerlink" title="2.网络协议"></a>2.网络协议</h1><table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">全称</th>
+<th style="text-align:center">协议本质</th>
+<th style="text-align:center">原理</th>
+<th style="text-align:center">延迟</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">RTMP</td>
+<td style="text-align:center">Real Time Messaging Protocol</td>
+<td style="text-align:center">长连接TCP</td>
+<td style="text-align:center">每个时刻的数据收到后立刻转发</td>
+<td style="text-align:center">1~3s</td>
+</tr>
+<tr>
+<td style="text-align:center">HLS</td>
+<td style="text-align:center">HTTP Live Streaming</td>
+<td style="text-align:center">短连接HTTP</td>
+<td style="text-align:center">集合一段时间数据，生成ts视频文件，更新m3u8索引</td>
+<td style="text-align:center">10~20s</td>
+</tr>
+<tr>
+<td style="text-align:center">RTMP over HTTP</td>
+<td style="text-align:center">RTMP over HTTP</td>
+<td style="text-align:center">长链接HTTP</td>
+<td style="text-align:center">每个时刻的数据收到后立刻转发，但是使用HTTP协议</td>
+<td style="text-align:center">1~3s</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">优点</th>
+<th style="text-align:center">缺点</th>
+<th style="text-align:center">适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">RTMP over HTTP</td>
+<td style="text-align:center">低延时</td>
+<td style="text-align:center">跨平台差；Flash以外的平台都需要移植</td>
+<td style="text-align:center">即时，有互动需求</td>
+</tr>
+<tr>
+<td style="text-align:center">HLS</td>
+<td style="text-align:center">跨平台；可点播回放</td>
+<td style="text-align:center">高延时；多次请求，网络质量影响大</td>
+<td style="text-align:center">单向广播</td>
+</tr>
+</tbody>
+</table>
+<h1 id="3-协议技术说明"><a href="#3-协议技术说明" class="headerlink" title="3.协议技术说明"></a>3.协议技术说明</h1><ol>
+<li><p>HTTP Live Streaming<br>　- .ts + m3u8 index file 切割视频为3个ts，每个ts 10s 所以延迟20~30s<br>　- 基于HTTP，3次tcp握手，HTTP协议头，消耗大<br>　- 平滑切换码率<br>　- 基于HTTP可以避免防火墙或者代理问题<br>　- 在ios/android的webkit浏览器内核可以播放</p>
+</li>
+<li><p>Real Time Messaging Protocol<br>　- 数据流向不会产生类似HLS的ts文件<br>　- 基于TCP，保持长连接，避免握手链接<br>　- 跨平台差，需要flash player</p>
+</li>
+</ol>
+<h1 id="4-优化"><a href="#4-优化" class="headerlink" title="4.优化"></a>4.优化</h1><p><a href="http://mp.weixin.qq.com/s?__biz=MzAwMDU1MTE1OQ==&amp;mid=2653547042&amp;idx=1&amp;sn=26d8728548a6b5b657079eeab121e283&amp;scene=2&amp;srcid=0428msEitG9LJ3JaKGaRCEjg&amp;from=timeline&amp;isappinstalled=0#wechat_redirect" target="_blank" rel="external">优化</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/13/认识“SEO”/" rel="next" title="认识“SEO”">
+                <i class="fa fa-chevron-left"></i> 认识“SEO”
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/16/怎么把http转成https？/" rel="prev" title="怎么把http转成https？">
+                怎么把http转成https？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/headpic/avatar.jpg"
+               alt="sidalee" />
+          <p class="site-author-name" itemprop="name">sidalee</p>
+           
+              <p class="site-description motion-element" itemprop="description">越努力，越幸运</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/sidalee" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cheyennerowe.github.io/" title="媳妇博客" target="_blank">媳妇博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/CheyenneRowe/FEQuestion/blob/master/%E6%AF%8F%E5%A4%A9%E9%83%BD%E5%AD%A6%E4%B8%80%E7%82%B9%E7%82%B9.md" title="媳妇每天都学一点点" target="_blank">媳妇每天都学一点点</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-采集"><span class="nav-number">1.</span> <span class="nav-text">1.采集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-网络协议"><span class="nav-number">2.</span> <span class="nav-text">2.网络协议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-协议技术说明"><span class="nav-number">3.</span> <span class="nav-text">3.协议技术说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-优化"><span class="nav-number">4.</span> <span class="nav-text">4.优化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sidalee</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

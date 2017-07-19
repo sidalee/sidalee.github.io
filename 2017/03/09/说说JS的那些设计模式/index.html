@@ -1,0 +1,692 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="JS的设计模式很多，常用的有如下几个，有兴趣的还可以阅读极客学院的《学用JS设计模式》 传统的设计模式　　1. 构造器模式　　2. 模块化模式　　3. 单例模式　　4. 观察者模式　　5. 原型模式　　6. 外观模式　　7. 工厂模式 　　我们今天重点说说JS的MV*模式以及模块化JS设计模式。 MV*模式　　客户端根据用户的行为修改客户端Model–&amp;gt;客户端更新和该Model相关的Vi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="说说JS的那些设计模式">
+<meta property="og:url" content="https://sidalee.github.io/2017/03/09/说说JS的那些设计模式/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="JS的设计模式很多，常用的有如下几个，有兴趣的还可以阅读极客学院的《学用JS设计模式》 传统的设计模式　　1. 构造器模式　　2. 模块化模式　　3. 单例模式　　4. 观察者模式　　5. 原型模式　　6. 外观模式　　7. 工厂模式 　　我们今天重点说说JS的MV*模式以及模块化JS设计模式。 MV*模式　　客户端根据用户的行为修改客户端Model–&amp;gt;客户端更新和该Model相关的Vi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E6%BC%94%E5%8C%96.png?raw=true">
+<meta property="og:updated_time" content="2017-03-28T01:27:43.405Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="说说JS的那些设计模式">
+<meta name="twitter:description" content="JS的设计模式很多，常用的有如下几个，有兴趣的还可以阅读极客学院的《学用JS设计模式》 传统的设计模式　　1. 构造器模式　　2. 模块化模式　　3. 单例模式　　4. 观察者模式　　5. 原型模式　　6. 外观模式　　7. 工厂模式 　　我们今天重点说说JS的MV*模式以及模块化JS设计模式。 MV*模式　　客户端根据用户的行为修改客户端Model–&amp;gt;客户端更新和该Model相关的Vi">
+<meta name="twitter:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E6%BC%94%E5%8C%96.png?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sidalee.github.io/2017/03/09/说说JS的那些设计模式/"/>
+
+
+
+
+
+  <title> 说说JS的那些设计模式 | Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sidalee.github.io/2017/03/09/说说JS的那些设计模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sidalee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/headpic/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                说说JS的那些设计模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-09T09:44:56+08:00">
+                2017-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>　　JS的设计模式很多，常用的有如下几个，有兴趣的还可以阅读极客学院的<a href="http://wiki.jikexueyuan.com/project/javascript-design-patterns/" target="_blank" rel="external">《学用JS设计模式》</a></p>
+<h1 id="传统的设计模式"><a href="#传统的设计模式" class="headerlink" title="传统的设计模式"></a>传统的设计模式</h1><p>　　1. 构造器模式<br>　　2. 模块化模式<br>　　3. 单例模式<br>　　4. 观察者模式<br>　　5. 原型模式<br>　　6. 外观模式<br>　　7. 工厂模式</p>
+<p>　　我们今天重点说说JS的<strong>MV*模式</strong>以及<strong>模块化JS设计模式</strong>。</p>
+<h1 id="MV-模式"><a href="#MV-模式" class="headerlink" title="MV*模式"></a>MV*模式</h1><p>　　客户端根据用户的行为修改客户端Model–&gt;客户端更新和该Model相关的View–&gt;客户端Model发送sync请求到服务器，只包含改变了哪些数据–&gt;服务器审核数据改动是否合法，只需回复是否修改成功–&gt;客户端收到成功，什么都不用做；不成功，则把刚才改的View改回来，然后通知用户。（当然，也可以在客户端的Model里面也加入审核机制，这样对不合法数据的反应更快，但还是得保留服务器端的审核）</p>
+<h2 id="MVC模式"><a href="#MVC模式" class="headerlink" title="MVC模式"></a>MVC模式</h2><ul>
+<li>模型（Model）：数据保存</li>
+<li>视图（View）：用户界面。</li>
+<li>控制器（Controller）：业务逻辑<br>　　View（界面）触发事件–&gt;Controller（业务）处理了业务，然后触发了数据更新–&gt;不知道谁更新了Model的数据—&gt;Model（带着数据）回到了View–&gt;View更新数据</li>
+</ul>
+<h2 id="MVP模式"><a href="#MVP模式" class="headerlink" title="MVP模式"></a>MVP模式</h2><p>　　MVP中的P代表表示器。这是一个包含用于View的用户界面业务逻辑的组件<br>　　MVP定义了Presenter和View之间的接口，让一些可以根据已有的接口协议去各自分别独立开发，以此去解决界面需求变化频繁的问题，切断的View和Model的联系，让View只和Presenter（原Controller）交互，减少在需求变化中需要维护的对象的数量。</p>
+<h2 id="MVVM模式"><a href="#MVVM模式" class="headerlink" title="MVVM模式"></a>MVVM模式</h2><p>　　MVVM中的VM代表是MVP的Presenter和MVC的Controller，而View和ViewModel间没有了MVP的界面接口，而是直接交互，用数据“绑定”的形式让数据更新的事件不需要开发人员手动去编写特殊用例，而是自动地双向同步。<br>　　比起MVP，MVVM不仅简化了业务与界面的依赖关系，还优化了数据频繁更新的解决方案，甚至可以说提供了一种有效的解决模式。</p>
+<h1 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h1><h2 id="CMD、AMD"><a href="#CMD、AMD" class="headerlink" title="CMD、AMD"></a>CMD、AMD</h2><p>　　由于浏览器加载要看网速的快慢，所以必须使用异步加载的方式，这就是AMD产生的背景<br>　　它采用异步方式加载模块，模块的加载不影响它后面语句的运行。所有依赖这个模块的语句，都定义在一个回调函数中，等到加载完成之后，这个回调函数才会运行。<br>　　CMD和AMD的区别:CMD相当于按需加载，定义一个模块的时候不需要立即制定依赖模块，在需要的时候require就可以了，比较方便；而AMD则相反，定义模块的时候需要制定依赖模块，并以形参的方式引入factory中。</p>
+<h2 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h2><p>　　简单来讲，它是一个规范。<br>　　根据这个规范，每个文件就是一个模块，有自己的作用域。在一个文件里面定义的变量、函数、类，都是私有的，对其他文件不可见。</p>
+<h2 id="ES-Harmony"><a href="#ES-Harmony" class="headerlink" title="ES Harmony"></a>ES Harmony</h2><p>最后，附一张前端框架的演化图<br><img src="https://github.com/sidalee/pic_of_markdown/blob/master/%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6%E6%BC%94%E5%8C%96.png?raw=true" alt="前端框架演化图"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/26/清除浮动/" rel="next" title="清除浮动">
+                <i class="fa fa-chevron-left"></i> 清除浮动
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/17/发现一个阿里聚安全的小bug/" rel="prev" title="发现一个阿里聚安全的小bug">
+                发现一个阿里聚安全的小bug <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/headpic/avatar.jpg"
+               alt="sidalee" />
+          <p class="site-author-name" itemprop="name">sidalee</p>
+           
+              <p class="site-description motion-element" itemprop="description">越努力，越幸运</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/sidalee" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cheyennerowe.github.io/" title="媳妇博客" target="_blank">媳妇博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/CheyenneRowe/FEQuestion/blob/master/%E6%AF%8F%E5%A4%A9%E9%83%BD%E5%AD%A6%E4%B8%80%E7%82%B9%E7%82%B9.md" title="媳妇每天都学一点点" target="_blank">媳妇每天都学一点点</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#传统的设计模式"><span class="nav-number">1.</span> <span class="nav-text">传统的设计模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MV-模式"><span class="nav-number">2.</span> <span class="nav-text">MV*模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC模式"><span class="nav-number">2.1.</span> <span class="nav-text">MVC模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVP模式"><span class="nav-number">2.2.</span> <span class="nav-text">MVP模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVVM模式"><span class="nav-number">2.3.</span> <span class="nav-text">MVVM模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模块化"><span class="nav-number">3.</span> <span class="nav-text">模块化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CMD、AMD"><span class="nav-number">3.1.</span> <span class="nav-text">CMD、AMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CommonJS"><span class="nav-number">3.2.</span> <span class="nav-text">CommonJS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES-Harmony"><span class="nav-number">3.3.</span> <span class="nav-text">ES Harmony</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sidalee</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,657 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="今天女朋友给我发来一个阿里神盾局的搜索链接，无意中点进去竟然发现一个小bug　　阿里聚安全　　点击menu上的 风险态势，会进入正常的风险态势页面　　点击menu上的 安全博客， 然后再点击风险态势，就会停留在现有页面　　打开开发者模式才发现，原来是这样滴 　　实际上首页的这个地方是这样滴 　　真相大白！　　PS：markdown插入图片的话，三个简单办法：　　1. 图片上传github　　2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="发现一个阿里聚安全的小bug">
+<meta property="og:url" content="https://sidalee.github.io/2017/03/17/发现一个阿里聚安全的小bug/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="今天女朋友给我发来一个阿里神盾局的搜索链接，无意中点进去竟然发现一个小bug　　阿里聚安全　　点击menu上的 风险态势，会进入正常的风险态势页面　　点击menu上的 安全博客， 然后再点击风险态势，就会停留在现有页面　　打开开发者模式才发现，原来是这样滴 　　实际上首页的这个地方是这样滴 　　真相大白！　　PS：markdown插入图片的话，三个简单办法：　　1. 图片上传github　　2">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/%E9%98%BF%E9%87%8C%E8%81%9A%E5%AE%89%E5%85%A81.jpg?raw=true">
+<meta property="og:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/%E9%98%BF%E9%87%8C%E8%81%9A%E5%AE%89%E5%85%A82.jpg?raw=true">
+<meta property="og:updated_time" content="2017-03-17T07:04:08.072Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="发现一个阿里聚安全的小bug">
+<meta name="twitter:description" content="今天女朋友给我发来一个阿里神盾局的搜索链接，无意中点进去竟然发现一个小bug　　阿里聚安全　　点击menu上的 风险态势，会进入正常的风险态势页面　　点击menu上的 安全博客， 然后再点击风险态势，就会停留在现有页面　　打开开发者模式才发现，原来是这样滴 　　实际上首页的这个地方是这样滴 　　真相大白！　　PS：markdown插入图片的话，三个简单办法：　　1. 图片上传github　　2">
+<meta name="twitter:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/%E9%98%BF%E9%87%8C%E8%81%9A%E5%AE%89%E5%85%A81.jpg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sidalee.github.io/2017/03/17/发现一个阿里聚安全的小bug/"/>
+
+
+
+
+
+  <title> 发现一个阿里聚安全的小bug | Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sidalee.github.io/2017/03/17/发现一个阿里聚安全的小bug/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sidalee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/headpic/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                发现一个阿里聚安全的小bug
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-17T13:20:34+08:00">
+                2017-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>　　今天女朋友给我发来一个阿里神盾局的搜索链接，无意中点进去竟然发现一个小bug<br>　　<strong><a href="http://jaq.alibaba.com/?spm=a313e.7916648.1000000.1.08WewG" target="_blank" rel="external">阿里聚安全</a></strong><br>　　点击menu上的<strong> <a href="http://jaq.alibaba.com/front/chart.htm?spm=a313e.7768735.1000000.8.BdVc4A" target="_blank" rel="external">风险态势</a></strong>，会进入正常的风险态势页面<br>　　点击menu上的<strong> <a href="http://jaq.alibaba.com/community/index.htm?spm=a313e.7768735.1000000.6.BdVc4A" target="_blank" rel="external">安全博客</a></strong>， 然后再点击风险态势，就会停留在现有页面<br>　　打开开发者模式才发现，原来是这样滴</p>
+<p><img src="https://github.com/sidalee/pic_of_markdown/blob/master/%E9%98%BF%E9%87%8C%E8%81%9A%E5%AE%89%E5%85%A81.jpg?raw=true" alt="pic1"><br>　　实际上首页的这个地方是这样滴</p>
+<p><img src="https://github.com/sidalee/pic_of_markdown/blob/master/%E9%98%BF%E9%87%8C%E8%81%9A%E5%AE%89%E5%85%A82.jpg?raw=true" alt="pic1"><br>　　真相大白！<br>　　<strong>PS</strong>：markdown插入图片的话，三个简单办法：<br>　　1. 图片上传github<br>　　2. 图片上传微博<br>　　3. 图片上传图床，再使用图床返回的地址<br>(2017-3-17)</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/09/说说JS的那些设计模式/" rel="next" title="说说JS的那些设计模式">
+                <i class="fa fa-chevron-left"></i> 说说JS的那些设计模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/20/在浏览器那里输入一个网址，会发生什么？/" rel="prev" title="在浏览器那里输入一个网址，会发生什么？">
+                在浏览器那里输入一个网址，会发生什么？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/headpic/avatar.jpg"
+               alt="sidalee" />
+          <p class="site-author-name" itemprop="name">sidalee</p>
+           
+              <p class="site-description motion-element" itemprop="description">越努力，越幸运</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/sidalee" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cheyennerowe.github.io/" title="媳妇博客" target="_blank">媳妇博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/CheyenneRowe/FEQuestion/blob/master/%E6%AF%8F%E5%A4%A9%E9%83%BD%E5%AD%A6%E4%B8%80%E7%82%B9%E7%82%B9.md" title="媳妇每天都学一点点" target="_blank">媳妇每天都学一点点</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sidalee</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

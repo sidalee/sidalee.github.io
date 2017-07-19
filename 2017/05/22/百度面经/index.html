@@ -1,0 +1,833 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="百度前端面试（5.18） 写程序：将一个数组打乱顺序 123arr.sort(function() &amp;#123;    return 0.5 - Math.random()&amp;#125;) ​  ajax如何读取post的数据，如何返回数据？ request.responseText  JS原生事件代理，怎么判断是ul下的li还是空白符出发了事件？ 12345678910window.onload">
+<meta property="og:type" content="article">
+<meta property="og:title" content="百度面经">
+<meta property="og:url" content="https://sidalee.github.io/2017/05/22/百度面经/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="百度前端面试（5.18） 写程序：将一个数组打乱顺序 123arr.sort(function() &amp;#123;    return 0.5 - Math.random()&amp;#125;) ​  ajax如何读取post的数据，如何返回数据？ request.responseText  JS原生事件代理，怎么判断是ul下的li还是空白符出发了事件？ 12345678910window.onload">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-05-22T13:52:36.198Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="百度面经">
+<meta name="twitter:description" content="百度前端面试（5.18） 写程序：将一个数组打乱顺序 123arr.sort(function() &amp;#123;    return 0.5 - Math.random()&amp;#125;) ​  ajax如何读取post的数据，如何返回数据？ request.responseText  JS原生事件代理，怎么判断是ul下的li还是空白符出发了事件？ 12345678910window.onload">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sidalee.github.io/2017/05/22/百度面经/"/>
+
+
+
+
+
+  <title> 百度面经 | Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sidalee.github.io/2017/05/22/百度面经/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sidalee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/headpic/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                百度面经
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-22T15:07:21+08:00">
+                2017-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="百度前端面试（5-18）"><a href="#百度前端面试（5-18）" class="headerlink" title="百度前端面试（5.18）"></a>百度前端面试（5.18）</h1><ol>
+<li><p>写程序：将一个数组打乱顺序</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">arr.sort(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="number">0.5</span> - <span class="built_in">Math</span>.random()</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+<li><p>ajax如何读取post的数据，如何返回数据？</p>
+<p><code>request.responseText</code></p>
+</li>
+<li><p>JS原生事件代理，怎么判断是ul下的li还是空白符出发了事件？</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">　　<span class="keyword">var</span> _Ul = <span class="built_in">document</span>.getElementById(<span class="string">"ul"</span>);</div><div class="line">　　_Ul.onclick = <span class="function"><span class="keyword">function</span>(<span class="params">ev</span>)</span>&#123;</div><div class="line">　　　　<span class="keyword">var</span> ev = ev || <span class="built_in">window</span>.event;</div><div class="line">　　　　<span class="keyword">var</span> target = ev.target || ev.srcElement;</div><div class="line">　　　　<span class="keyword">if</span>(target.nodeName.toLowerCase() == <span class="string">'li'</span>)&#123;</div><div class="line">　 　　　　　　alert(<span class="number">123</span>);</div><div class="line">　　　　&#125;</div><div class="line">　　&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+<li><p>get和post的区别</p>
+<ul>
+<li>GET使用URL或Cookie传参。而POST将数据放在BODY中</li>
+<li>GET的URL会有长度上的限制，则POST的数据则可以非常大</li>
+<li>POST比GET安全，因为数据在地址栏上不可见</li>
+<li>GET产生一个TCP数据包；POST产生两个TCP数据包</li>
+<li>对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）； 而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>http响应头是什么？</p>
+</li>
+<li><p>JS是一种动态语言，那它的动态是什么？</p>
+</li>
+<li><p>页面优化怎么做？说的越详细越好？</p>
+</li>
+<li><p>CDN了解吗？</p>
+</li>
+<li><p>webpack的作用是什么，你都用过它的哪些功能，内部压缩是怎么压缩的？</p>
+</li>
+<li><p>MVVM比MVP的好处体现在哪里？</p>
+</li>
+<li><p>JS原生的bind知道吗？</p>
+</li>
+<li><p>说一下JS的继承</p>
+</li>
+<li><p>说一下原型链</p>
+</li>
+<li><p>cookie和localstorage的区别是什么？</p>
+<ul>
+<li>cookie在浏览器和服务器间来回传递，而sessionStorage和localStorage仅在本地保存。cookie数据还有路径（path）的概念，可以限制cookie只属于某个路径下</li>
+<li>cookie数据不能超过4k，sessionStorage和localStorage 可以达到5M或更大。</li>
+<li>sessionStorage：仅在当前浏览器窗口关闭前有效；localStorage：始终有效；cookie只在设置的cookie过期时间之前一直有效，即使窗口或浏览器关闭</li>
+<li>sessionStorage<strong>不在</strong>不同的浏览器窗口中共享，即使是同一个页面；localStorage 在所有同源窗口中都是共享的；cookie也是在所有同源窗口中都是共享的    </li>
+</ul>
+</li>
+</ol>
+<ol>
+<li><p>基于DOM的XSS是什么防止的？是怎么进行的？</p>
+</li>
+<li><p>flex知道吗？</p>
+</li>
+<li><p>响应式怎么实现？JS怎么获取设备dpr？</p>
+</li>
+<li><p>DOM操作方法都有哪些？</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">方法</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">getElementById()</td>
+<td style="text-align:center">返回带有指定 ID 的元素</td>
+</tr>
+<tr>
+<td style="text-align:center">getElementsByTagName()</td>
+<td style="text-align:center">返回包含带有指定标签名称的所有元素的节点列表（集合/节点数组）</td>
+</tr>
+<tr>
+<td style="text-align:center">getElementsByClassName()</td>
+<td style="text-align:center">返回包含带有指定类名的所有元素的节点列表</td>
+</tr>
+<tr>
+<td style="text-align:center">appendChild()</td>
+<td style="text-align:center">把新的子节点添加到指定节点</td>
+</tr>
+<tr>
+<td style="text-align:center">removeChild()</td>
+<td style="text-align:center">删除子节点</td>
+</tr>
+<tr>
+<td style="text-align:center">replaceChild()</td>
+<td style="text-align:center">替换子节点</td>
+</tr>
+<tr>
+<td style="text-align:center">insertBefore()</td>
+<td style="text-align:center">在指定的子节点前面插入新的子节点</td>
+</tr>
+<tr>
+<td style="text-align:center">createAttribute()</td>
+<td style="text-align:center">创建属性节点</td>
+</tr>
+<tr>
+<td style="text-align:center">createElement()</td>
+<td style="text-align:center">创建元素节点</td>
+</tr>
+<tr>
+<td style="text-align:center">createTextNode()</td>
+<td style="text-align:center">创建文本节点</td>
+</tr>
+<tr>
+<td style="text-align:center">getAttribute()</td>
+<td style="text-align:center">返回指定的属性值</td>
+</tr>
+<tr>
+<td style="text-align:center">setAttribute()</td>
+<td style="text-align:center">把指定属性设置或修改为指定的值</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><p>怎么获取页面的全部DOM节点？</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">window</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;  </div><div class="line">       <span class="comment">//document 获取根元素  </span></div><div class="line">       <span class="keyword">var</span> root = <span class="built_in">document</span>.documentElement;  </div><div class="line">       <span class="comment">//遍历所哟的节点  </span></div><div class="line">       traverseNodes(root);  </div><div class="line">       <span class="built_in">document</span>.write(msg);  </div><div class="line">   &#125;  </div><div class="line">     </div><div class="line">   <span class="function"><span class="keyword">function</span> <span class="title">traverseNodes</span>(<span class="params">node</span>)</span>&#123;  </div><div class="line">         </div><div class="line">       <span class="comment">//判断是否是元素节点  </span></div><div class="line">       <span class="keyword">if</span>(node.nodeType == <span class="number">1</span>)&#123;  </div><div class="line">           display(node);  </div><div class="line">           <span class="comment">//判断是否有属性节点  </span></div><div class="line">           <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i&lt;node.attributes.length;i++)&#123;  </div><div class="line">               <span class="comment">//得到属性节点  </span></div><div class="line">               <span class="keyword">var</span> attr = node.attributes.item(i);  </div><div class="line">               <span class="comment">//判断该节点是否存在  </span></div><div class="line">               <span class="keyword">if</span>(attr.specified)&#123;  </div><div class="line">                   <span class="comment">//如果存在 显示输出  </span></div><div class="line">                   display(attr);  </div><div class="line">               &#125;  </div><div class="line">           &#125;  </div><div class="line">             </div><div class="line">           <span class="comment">//判断该元素节点是否有子节点  </span></div><div class="line">           <span class="keyword">if</span>(node.hasChildNodes)&#123;  </div><div class="line">               <span class="comment">//得到所有的子节点  </span></div><div class="line">               <span class="keyword">var</span> sonnodes = node.childNodes;  </div><div class="line">               <span class="comment">//遍历所哟的子节点  </span></div><div class="line">               <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; sonnodes.length; i++) &#123;  </div><div class="line">                   <span class="comment">//得到具体的某个子节点  </span></div><div class="line">                   <span class="keyword">var</span> sonnode = sonnodes.item(i);  </div><div class="line">                   <span class="comment">//递归遍历  </span></div><div class="line">                   traverseNodes(sonnode);  </div><div class="line">               &#125;  </div><div class="line">           &#125;  </div><div class="line">       &#125;<span class="keyword">else</span>&#123;  </div><div class="line">           display(node);  </div><div class="line">       &#125;  </div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+<li><p>怎么遍历JS的全部属性？</p>
+<p><code>for......in</code></p>
+</li>
+<li><p>怎么样判断一个对象的属性是他自己的还是他原型链上的？</p>
+<p><code>obj.hasOwnProperty(attribute)</code>： 可以检测一个属性是否存在于一个实例对象中，还是存在于原型对象中，若存在于实例对象中，则返回true</p>
+</li>
+<li><p>正则表达式实现匹配1-100中的数字    </p>
+<p> /^([1-9]\d?|100)$/;</p>
+</li>
+<li><p>如何获取a标签中的href内容？</p>
+<p> aaa.href  或 aaa.getAttribute(‘href’)</p>
+</li>
+<li><p>手写深拷贝</p>
+</li>
+<li><p>常见的设计模式有哪些？说一下观察者模式？说一下单例模式？</p>
+</li>
+<li><p>模块化了解过吗？</p>
+</li>
+<li><p>ES6了解吗？</p>
+</li>
+<li><p>call和apply的用法和区别是什么？</p>
+</li>
+<li><p>instanceOf了解吗？</p>
+<p>instanceof 用于判断对象是否是特定类的一个实例</p>
+</li>
+<li><p>盒子模型说一下</p>
+</li>
+<li><p>轮播图，如何判断手势怎么滑动，往哪边滑？</p>
+</li>
+<li><p>e和event都有哪些属性？</p>
+</li>
+<li><p>最近在关注哪些新技术？都是什么渠道？</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/16/排序算法/" rel="next" title="排序算法">
+                <i class="fa fa-chevron-left"></i> 排序算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/22/360面经/" rel="prev" title="360面经">
+                360面经 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/headpic/avatar.jpg"
+               alt="sidalee" />
+          <p class="site-author-name" itemprop="name">sidalee</p>
+           
+              <p class="site-description motion-element" itemprop="description">越努力，越幸运</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/sidalee" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cheyennerowe.github.io/" title="媳妇博客" target="_blank">媳妇博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/CheyenneRowe/FEQuestion/blob/master/%E6%AF%8F%E5%A4%A9%E9%83%BD%E5%AD%A6%E4%B8%80%E7%82%B9%E7%82%B9.md" title="媳妇每天都学一点点" target="_blank">媳妇每天都学一点点</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#百度前端面试（5-18）"><span class="nav-number">1.</span> <span class="nav-text">百度前端面试（5.18）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sidalee</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="源博客：深入剖析Nodejs的异步IO 结构组成　　Nodejs结构大体分为三个部分：  Node.js标准库：这部分由JavaScript编写。也就是平时我们经常require的各个模块，如：http，fs、express，request…… 这部分在源码的lib目录下可以看到； Node bingdings： nodejs程序的main函数入口，还有提供给lib模块的C++类接口，这一层是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js之异步IO">
+<meta property="og:url" content="https://sidalee.github.io/2017/03/29/Node-js之异步IO/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="源博客：深入剖析Nodejs的异步IO 结构组成　　Nodejs结构大体分为三个部分：  Node.js标准库：这部分由JavaScript编写。也就是平时我们经常require的各个模块，如：http，fs、express，request…… 这部分在源码的lib目录下可以看到； Node bingdings： nodejs程序的main函数入口，还有提供给lib模块的C++类接口，这一层是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/node_io.png?raw=true">
+<meta property="og:updated_time" content="2017-03-30T01:30:33.409Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js之异步IO">
+<meta name="twitter:description" content="源博客：深入剖析Nodejs的异步IO 结构组成　　Nodejs结构大体分为三个部分：  Node.js标准库：这部分由JavaScript编写。也就是平时我们经常require的各个模块，如：http，fs、express，request…… 这部分在源码的lib目录下可以看到； Node bingdings： nodejs程序的main函数入口，还有提供给lib模块的C++类接口，这一层是">
+<meta name="twitter:image" content="https://github.com/sidalee/pic_of_markdown/blob/master/node_io.png?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sidalee.github.io/2017/03/29/Node-js之异步IO/"/>
+
+
+
+
+
+  <title> Node.js之异步IO | Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sidalee.github.io/2017/03/29/Node-js之异步IO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sidalee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/headpic/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Node.js之异步IO
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-29T22:34:33+08:00">
+                2017-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>　　源博客：<a href="http://blog.csdn.net/yezhenxu1992/article/details/51731237" target="_blank" rel="external">深入剖析Nodejs的异步IO</a></p>
+<h2 id="结构组成"><a href="#结构组成" class="headerlink" title="结构组成"></a>结构组成</h2><p>　　Nodejs结构大体分为三个部分：</p>
+<ol>
+<li>Node.js标准库：这部分由JavaScript编写。也就是平时我们经常require的各个模块，如：http，fs、express，request…… 这部分在源码的lib目录下可以看到；</li>
+<li>Node bingdings： nodejs程序的main函数入口，还有提供给lib模块的C++类接口，这一层是javascript与底层C/C++沟通的桥梁，由C++编写，这部分在源码的src目录下可以看到；</li>
+<li>最底层，支持Nodejs运行的关键： V8 引擎：用来解析、执行javascript代码的运行环境。 libuv： 提供最底层的IO操作接口，包括文件异步IO的线程池管理和网络的IO操作，是整个异步IO实现的核心！ 这部分由C/C++编写，在源码的deps目录下可以看到。</li>
+</ol>
+<p>　　小结：我们其实对 Node.js的单线程一直有个很深的误会。事实上，这里的“单线程”指的是我们（开发者）编写的代码只能运行在一个线程当中（习惯称之为主线程），Node.js并没有给 Javascript 执行时创建新线程的能力，所以称为单线程，也就是所谓的主线程。 其实，Nodejs中许多异步方法内部均采用了多线程机制。</p>
+<h2 id="内部操作"><a href="#内部操作" class="headerlink" title="内部操作　　"></a>内部操作　　</h2><p>　　那么异步IO操作内部是如何实现呢？话不多说，先放图：<br><img src="https://github.com/sidalee/pic_of_markdown/blob/master/node_io.png?raw=true" alt="node.js"></p>
+<ol>
+<li><strong>node启动</strong>，进入main函数；</li>
+<li><strong>初始化核心数据结构</strong> default_loop_struct；这个数据结构是事件循环的核心，当node执行到“加载js文件”时，如果用户的javascript代码中具有异步IO操作时，如读写文件。这时候，javascript代码调用–&gt;lib模块–&gt;C++模块–&gt;libuv接口–&gt;最终系统底层的API—&gt;系统返回一个文件描述符fd 和javascript代码传进来的回调函数callback，然后封装成一个IO观察者，保存到default_loop_struct。<br>（文件描述符的理解： 对于每个程序系统都有一张单独的表。当进程打开一个文件时，系统把一个指向此文件内部数据结构的指针写入文件描述符表，并把该表的索引值返回给调用者 。应用程序只需记住这个描述符，并在以后操作该文件时使用它。操作系统把该描述符作为索引访问进程描述符表，通过指针找到保存该文件所有的信息的数据结构。）<br>（观察者的理解：在每个的过程中，为了判断是否有事件需要处理，所以引入了观察者的概念，每个事件循环中有一个或多个观察者，判断是否有事件要处理的过程就是向这些观察者询问是否有要处理的事件。在node中，事件主要来源于网络请求，文件IO等，这些事件对应的观察者有文件I/O观察者、网络I/O观察者等。事件轮询是一个典型的生产者、消费者模型，异步I/O、网络请求等则是事件的生产者，源源不断为node提供不同类型的事件，这些事件被传递到对应的观察者那里，事件循环则从观察者那里取出事件并处理。）</li>
+<li><strong>加载用户javascript文件</strong>，调用V8引擎接口，解析并执行javascript代码； 如果有异步IO，则通过一系列调用系统底层API，若是网络IO，则把系统调用后返回的结果（文件描述符fd）和事件绑定的回调函数callback，一起封装成一个IO观察者，保存到default_loop_struct。<br>至此，JavaScript调用立即返回，由JavaScript层面发起的异步调用的第一阶段就此结束。JavaScript线程可以继续执行当前任务的后续操作。当前的I/O操作在线程池中等待执行，不管它是否会阻塞I/O，都不会影响到JavaScript线程的后续执行，如此就达到到了异步的目的。</li>
+<li><strong>进入事件循环</strong>。当处理完 js代码，如果有io操作，那么这时default_loop_struct是保存着对应的io观察者的。处理完js代码，node进程进入事件循环。</li>
+<li>这里要强调的是：只有用户的js代码全部执行完后，nodejs才调用libuv的事件循环入口函数uv_run()，即回调函数才有可能被执行。所以，如果主线程的js代码调用了阻塞方法，那么整个事件轮询就会被阻塞，事件队列中的事件便得不到及时处理。<br>这也说明了，如果真正想做到异步IO操作，主线程应该尽量避免大量的耗时计算或调用阻塞函数。</li>
+</ol>
+<p>　　总结：<strong>事件循环、观察者、请求对象、IO线程池</strong>这四者共同构成了Node异步IO操作的基本要素。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/27/JS数组去重/" rel="next" title="JS数组去重">
+                <i class="fa fa-chevron-left"></i> JS数组去重
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/30/Node-js入门/" rel="prev" title="Node.js入门">
+                Node.js入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/headpic/avatar.jpg"
+               alt="sidalee" />
+          <p class="site-author-name" itemprop="name">sidalee</p>
+           
+              <p class="site-description motion-element" itemprop="description">越努力，越幸运</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/sidalee" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://cheyennerowe.github.io/" title="媳妇博客" target="_blank">媳妇博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/CheyenneRowe/FEQuestion/blob/master/%E6%AF%8F%E5%A4%A9%E9%83%BD%E5%AD%A6%E4%B8%80%E7%82%B9%E7%82%B9.md" title="媳妇每天都学一点点" target="_blank">媳妇每天都学一点点</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#结构组成"><span class="nav-number">1.</span> <span class="nav-text">结构组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内部操作"><span class="nav-number">2.</span> <span class="nav-text">内部操作　　</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sidalee</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
