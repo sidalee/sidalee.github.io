@@ -251,6 +251,140 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://sidalee.github.io/2017/04/20/JS跨域/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sidalee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/headpic/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/20/JS跨域/" itemprop="url">
+                  JS跨域
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-20T14:39:15+08:00">
+                2017-04-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h1><ul>
+<li>不能通过ajax的方法或其他脚本中的请求去访问不同源中的文档</li>
+<li>浏览器中不同域的框架之间是不能进行js的交互操作的</li>
+</ul>
+<h1 id="跨域"><a href="#跨域" class="headerlink" title="跨域"></a>跨域</h1><h2 id="jsonp"><a href="#jsonp" class="headerlink" title="jsonp"></a>jsonp</h2><p><code>&lt;script src=&quot;&#39;http://api.xxx.com/param=1?callback=foo&quot;&gt;&lt;/script&gt;</code><br>　　当需要跨域时，我们创建一个上面这样的脚本，地址指向第三方的API网址，并提供一个回调函数来接收数据。然后api返回响应为json数据的包装。这样浏览器会调用callback函数，本站脚本可在callback函数里处理所传入的数据<br>　　PS：json和jsonp有什么关系呢？是不是java和javascript的关系，也就是雷锋和雷峰塔的关系，也就是没关系呢？答案是否定的。<br>　　jsonp的是指JSON with Padding，是一种非正式传输协议，该协议的一个要点就是允许用户传递一个callback参数给服务端，然后服务端返回数据时会将这个callback参数作为函数名来包裹住JSON数据，这样客户端就可以随意定制自己的函数来自动处理返回数据了，比如我们的foo(data)，json格式的data被我们的回调函数foo包裹起来，有了个padding，所以jsonp是对json的进一步加工，所以还是有点关系的。</p>
+<ul>
+<li>优点：可以跨域</li>
+<li>缺点：它只支持GET请求而不支持POST等其它类型的HTTP请求；它只支持跨域HTTP请求这种情况，不能解决不同域的两个页面之间如何进行JavaScript调用的问题。</li>
+</ul>
+<h2 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h2><p>　　CORS全称Cross-Origin Resource Sharing，是HTML5规范定义的跨域访问资源的方法。<br>　　使用CORS的要点在于，看对方给不给你接口，如果对方的响应头Access-Control-Allow-Origin为*或者sidalee.github.io，那么妥了，我就可以向它请求了。</p>
+<h2 id="postMessage"><a href="#postMessage" class="headerlink" title="postMessage"></a>postMessage</h2><p>　　postMessage()方法允许来自不同源的脚本采用异步方式进行有限的通信，可以实现跨文本档、多窗口、跨域消息传递。<br>　　postMessage(data,origin)方法接受两个参数</p>
+<ul>
+<li>data:要传递的数据</li>
+<li>origin:目标窗口</li>
+</ul>
+<p>发送消息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">window.onload=function()&#123;</div><div class="line">    window.frames[0].postMessage(&apos;getcolor&apos;,&apos;1.com&apos;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>接收消息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">window.addEventListener(&apos;message&apos;,function(e)&#123;</div><div class="line">    if(e.source!=window.parent) return;</div><div class="line">    var color=container.style.backgroundColor;</div><div class="line">    window.parent.postMessage(color,&apos;*&apos;);</div><div class="line">&#125;,false);</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://sidalee.github.io/2017/04/18/JS的事件冒泡、事件捕获、事件委托/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1474,136 +1608,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://sidalee.github.io/2017/03/26/如何还原一颗二叉树/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sidalee">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/headpic/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/26/如何还原一颗二叉树/" itemprop="url">
-                  如何还原一颗二叉树
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-26T10:09:55+08:00">
-                2017-03-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>　　二叉树遍历，通常会用这三种方式：前序、中序（有时也叫对称）、后序，那么给定其中某一种或某两种遍历方式，如何还原二叉树呢？<br>　　我们先来谈谈三种方式的特点吧</p>
-<ul>
-<li>前序（根左右）：前序的特点是，先有根，后有叶，顺序为根左右，即根-左子树根-左子树左叶-左子树右叶-右子树根-等等，遍历时，先顺着左子树的左节点一直往下，到头了就返回它的父节点，找右叶子，以此类推。</li>
-<li>中序（左根右）：其实我们把它叫做对称，就很好判断了，中序的特点就是对称，排序时，按左中右来，在左半部分，也是按左中右来。中序遍历的小窍门就是，其排序实际上就是将树直接向下投影到x轴，这就是中序遍历。</li>
-<li>后序（左右根）：后序的最大特点就是，根节点在最后一位，所以如果给定后序和中序，我们很快能根据后序的最后一位确定根节点，然后在中序遍历根据中间的根节点划分出左子树与右子树。</li>
-</ul>
-<p>　　知道这些特点，我们也大概能确定了还原一棵树的顺序，而且发现，在每一颗子树上遍历的方法都与在根上遍历的方法相同，写程序时就能用递归来解决。</p>
-<ol>
-<li>找根节点</li>
-<li>确定左子树和右子树</li>
-<li>在子树中找根节点</li>
-<li>…</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1653,7 +1657,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">45</span>
+                <span class="site-state-item-count">46</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
